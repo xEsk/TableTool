@@ -106,10 +106,11 @@
     while(!_atEnd){
         NSString *scannedString = nil;
         NSError *scanError = nil;
+		BOOL quotedValue = NO;
         
         BOOL didScan = NO;
         if(!unquoted){
-            didScan = [self scanQuotedValueIntoString:&scannedString error:&scanError];
+            quotedValue = didScan = [self scanQuotedValueIntoString:&scannedString error:&scanError];
         }
         
         if((!didScan && scanError == nil)){
@@ -123,7 +124,7 @@
             return nil;
         }
         
-        if(scannedString.length > 0 && [regex numberOfMatchesInString:scannedString options:0 range:NSMakeRange(0, [scannedString length])] == 1){
+        if(scannedString.length > 0 && ! quotedValue && [regex numberOfMatchesInString:scannedString options:0 range:NSMakeRange(0, [scannedString length])] == 1){
             [rowArray addObject:[NSDecimalNumber decimalNumberWithString:scannedString locale:@{NSLocaleDecimalSeparator:_config.decimalMark}]];
         }else{
             [rowArray addObject:scannedString];
