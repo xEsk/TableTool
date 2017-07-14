@@ -37,20 +37,22 @@
                 [lineArray addObject:@""];
             }
             
+			BOOL isNumeric = NO;
             NSString *cellString;
             if([lineArray[columndIdentifier.integerValue] isKindOfClass:[NSDecimalNumber class]]){
                 cellString = [lineArray[columndIdentifier.integerValue] descriptionWithLocale:@{NSLocaleDecimalSeparator:_config.decimalMark}];
+				isNumeric = YES;
             }else{
                 cellString = lineArray[columndIdentifier.integerValue];
             }
             NSMutableString *temporaryCellValue = [[NSMutableString alloc]init];
 
-            if([_config.quoteCharacter isEqualToString:@"\""]) {
+            if( ! isNumeric && [_config.quoteCharacter isEqualToString:@"\""] && cellString.length > 0) {
                 [temporaryCellValue appendString:cellString];
                 if(![_config.escapeCharacter isEqualToString:_config.quoteCharacter]){
                     [temporaryCellValue replaceOccurrencesOfString:_config.escapeCharacter withString:[NSString stringWithFormat:@"%@%@",_config.escapeCharacter,_config.escapeCharacter] options:0 range:NSMakeRange(0, temporaryCellValue.length)];
                 }
-                [temporaryCellValue replaceOccurrencesOfString:_config.quoteCharacter withString:[NSString stringWithFormat:@"%@%@",_config.escapeCharacter,_config.quoteCharacter] options:0 range:NSMakeRange(0, temporaryCellValue.length)];
+				[temporaryCellValue replaceOccurrencesOfString:_config.quoteCharacter withString:[NSString stringWithFormat:@"%@%@",_config.escapeCharacter,_config.quoteCharacter] options:0 range:NSMakeRange(0, temporaryCellValue.length)];
                 [temporaryCellValue insertString:[NSString stringWithFormat:@"%@",_config.quoteCharacter] atIndex:0];
                 [temporaryCellValue appendString:_config.quoteCharacter];
                 [dataString appendString:temporaryCellValue];
