@@ -31,15 +31,17 @@
 /*WARNING: used order for calculating differs from configuration name:
 1.  _config1
 2.  _config10
-3.  _config6
-4.  _config2
-5.  _config5
-6.  _config7
-7.  _config3
-8.  _config8
-9.  _config4
-10. _config9
-11. _config11
+3.  _config12
+4.  _config6
+5.  _config2
+6.  _config5
+7.  _config7
+8.  _config13
+9.  _config3
+10. _config8
+11. _config4
+12. _config9
+13. _config11
 */
 
 -(void)setConfigs{
@@ -49,10 +51,13 @@
     
     _config10 = _config1.copy;
     _config10.escapeCharacter = @"\\";
-    
-    _config6 = _config1.copy;
-    _config6.quoteCharacter = @"";
-    
+
+	_config12 = _config1.copy;
+	_config12.decimalMark = @",";
+
+	_config6 = _config1.copy;
+	_config6.quoteCharacter = @"";
+	
     _config2 = [[CSVConfiguration alloc]init];
     _config2.columnSeparator = @";";
     _config2.decimalMark = @",";
@@ -62,8 +67,11 @@
     
     _config7 = _config2.copy;
     _config7.quoteCharacter = @"";
-    
-    _config3 = [[CSVConfiguration alloc]init];
+	
+	_config13 = _config2.copy;
+	_config13.decimalMark = @".";
+
+	_config3 = [[CSVConfiguration alloc]init];
     _config3.columnSeparator = @"\t";
     _config3.decimalMark = @".";
     
@@ -93,10 +101,12 @@
     CSVReader *reader9 = [[CSVReader alloc]initWithData:_data configuration:_config9];
     CSVReader *reader10 = [[CSVReader alloc]initWithData:_data configuration:_config10];
     CSVReader *reader11 = [[CSVReader alloc]initWithData:_data configuration:_config11];
+	CSVReader *reader12 = [[CSVReader alloc]initWithData:_data configuration:_config12];
+	CSVReader *reader13 = [[CSVReader alloc]initWithData:_data configuration:_config13];
 
-    firstRowArray = [[NSMutableArray alloc]initWithObjects:[NSNumber numberWithBool:NO],[NSNumber numberWithBool:NO],[NSNumber numberWithBool:NO],[NSNumber numberWithBool:NO],[NSNumber numberWithBool:NO],[NSNumber numberWithBool:NO],[NSNumber numberWithBool:NO],[NSNumber numberWithBool:NO],[NSNumber numberWithBool:NO],[NSNumber numberWithBool:NO],[NSNumber numberWithBool:NO], nil];
-    readerArray = [[NSArray alloc]initWithObjects:reader1,reader10,reader6,reader2,reader5,reader7,reader3,reader8,reader4,reader9,reader11,nil];
-    scores = [[NSMutableArray alloc]initWithObjects:[NSNumber numberWithInt:0],[NSNumber numberWithInt:0],[NSNumber numberWithInt:0],[NSNumber numberWithInt:0],[NSNumber numberWithInt:0],[NSNumber numberWithInt:0],[NSNumber numberWithInt:0],[NSNumber numberWithInt:0],[NSNumber numberWithInt:0],[NSNumber numberWithInt:0],[NSNumber numberWithInt:0],nil];
+    firstRowArray = [[NSMutableArray alloc]initWithObjects:[NSNumber numberWithBool:NO],[NSNumber numberWithBool:NO], [NSNumber numberWithBool:NO],[NSNumber numberWithBool:NO],[NSNumber numberWithBool:NO],[NSNumber numberWithBool:NO],[NSNumber numberWithBool:NO],[NSNumber numberWithBool:NO],[NSNumber numberWithBool:NO],[NSNumber numberWithBool:NO],[NSNumber numberWithBool:NO],[NSNumber numberWithBool:NO],[NSNumber numberWithBool:NO], nil];
+    readerArray = [[NSArray alloc]initWithObjects:reader1,reader10,reader12,reader6,reader2,reader5,reader7,reader13,reader3,reader8,reader4,reader9,reader11,nil];
+    scores = [[NSMutableArray alloc]initWithObjects:[NSNumber numberWithInt:0],[NSNumber numberWithInt:0],[NSNumber numberWithInt:0],[NSNumber numberWithInt:0],[NSNumber numberWithInt:0],[NSNumber numberWithInt:0],[NSNumber numberWithInt:0],[NSNumber numberWithInt:0],[NSNumber numberWithInt:0],[NSNumber numberWithInt:0],[NSNumber numberWithInt:0],[NSNumber numberWithInt:0],[NSNumber numberWithInt:0],nil];
     readLines = [[NSMutableArray alloc]init];
 }
 
