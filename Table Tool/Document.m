@@ -569,12 +569,21 @@ writeRowsWithIndexes:(NSIndexSet *)rowIndexes
     for(NSTableColumn *col in self.tableView.tableColumns.mutableCopy) {
         [self.tableView removeTableColumn:col];
     }
-    for(int i = 0; i < _maxColumnNumber; ++i) {
-        NSTableColumn *tableColumn = [[NSTableColumn alloc] initWithIdentifier:[NSString stringWithFormat:@"%d",i]];
+    for(int columnIdx = 0; columnIdx < _maxColumnNumber; ++columnIdx) {
+        NSTableColumn *tableColumn = [[NSTableColumn alloc] initWithIdentifier:[NSString stringWithFormat:@"%d", columnIdx]];
         tableColumn.dataCell = dataCell;
-        tableColumn.title = [self generateColumnName:i];
+        tableColumn.title = [self generateColumnName:columnIdx];
         ((NSCell *)tableColumn.headerCell).alignment = NSCenterTextAlignment;
         [self.tableView addTableColumn: tableColumn];
+		// calcule the best column width
+		NSRect rect = NSMakeRect(0, 0, INFINITY, self.tableView.rowHeight);
+		CGFloat maxSize = [tableColumn.headerCell cellSizeForBounds:rect].width + 10;
+		for (NSInteger rowIdx = 0; rowIdx < self.tableView.numberOfRows; rowIdx++) {
+			NSCell *cell = [self.tableView preparedCellAtColumn:columnIdx row:rowIdx];
+			NSSize size = [cell cellSizeForBounds:rect];
+			maxSize = MAX(maxSize, size.width + 10);
+		}
+		tableColumn.width = maxSize;
     }
 }
 
