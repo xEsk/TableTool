@@ -7,35 +7,19 @@
 //
 
 #import "TTFormatViewController.h"
+#import "CSVConfiguration.h"
 
 @interface TTFormatViewController ()
 @end
 
 @implementation TTFormatViewController
 
--(instancetype)initAsInputController:(BOOL)inputController {
-    self = [super initWithNibName:@"TTFormatViewController" bundle:nil];
+-(instancetype)initWithNibName:(NSString *)nibName bundle:(nullable NSBundle *)nibBundleOrNil {
+    self = [super initWithNibName:nibName bundle:nibBundleOrNil];
     if(self) {
         _config = [[CSVConfiguration alloc]init];
-        _isInputController = inputController;
     }
     return self;
-}
-
--(instancetype)initAsInputController:(BOOL)inputController withNibName:(NSString *)nibName {
-    self = [super initWithNibName:nibName bundle:nil];
-    if(self) {
-        _config = [[CSVConfiguration alloc]init];
-        _isInputController = inputController;
-    }
-    return self;
-}
-
-- (void)viewDidLoad {
-    if(_isInputController){
-        _useFirstRowAsHeaderCheckbox.hidden = NO;
-    }
-    [super viewDidLoad];
 }
 
 - (void)setEnabled:(BOOL)enabled {
@@ -62,42 +46,19 @@
         _config.escapeCharacter = @"";
     }
     _config.escapeCharacter = [[self.escapeControl labelForSegment:[self.escapeControl selectedSegment]] substringToIndex:1];
-    
+	
+	_config.firstRowAsHeader = (self.useFirstRowAsHeaderCheckbox.state == NSOnState);
+	
     [self.delegate configurationChangedForFormatViewController:self];
 }
 
-- (IBAction)useFirstRowAsHeaderClicked:(id)sender {
-    [self useFirstRowAsHeader];
-}
-
--(void)useFirstRowAsHeader{
-    if(!_firstRowAsHeader){
-        _firstRowAsHeader = YES;
-        _config.firstRowAsHeader = YES;
-    }else{
-        _firstRowAsHeader = NO;
-        _config.firstRowAsHeader = NO;
-    }
-    [self.delegate useFirstRowAsHeader:self];
-}
-
--(IBAction)confirmConfiguration:(id)sender{
-    [self.delegate confirmFormat:self];
-}
-
--(void)uncheckCheckbox{
-    [[_useFirstRowAsHeaderCheckbox cell] setState:0];
-    [self useFirstRowAsHeader];
-}
-
--(void)useLocale{
-    _config.decimalMark = [[NSLocale currentLocale] objectForKey:NSLocaleDecimalSeparator];
-    if([_config.decimalMark isEqualToString:@"."]){
-        _config.columnSeparator = @",";
-    }else{
-        _config.columnSeparator = @";";
-    }
-    [self selectFormatByConfig];
+-(void)awakeFromNib {
+	[_encodingMenu removeAllItems];
+	for (NSArray *encoding in [CSVConfiguration supportedEncodings]) {
+		NSMenuItem *item = [[NSMenuItem alloc] initWithTitle:encoding[0] action:NULL keyEquivalent:@""];
+		item.tag = [encoding[1] integerValue];
+		[_encodingMenu.menu addItem:item];
+	}
 }
 
 -(void)selectFormatByConfig{
@@ -123,11 +84,8 @@
     }else {
         [_escapeControl selectSegmentWithTag:2];
     }
-    
-    if(_config.firstRowAsHeader){
-        [_useFirstRowAsHeaderCheckbox setState:1];
-        [self useFirstRowAsHeader];
-    }
+
+	self.useFirstRowAsHeaderCheckbox.state = self.config.firstRowAsHeader ? NSOnState : NSOffState;
 }
 
 @end
